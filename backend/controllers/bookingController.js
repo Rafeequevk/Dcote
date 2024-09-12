@@ -1,4 +1,5 @@
 import Booking from "../models/bookingModel.js";
+import deleteFile from "../utils/deleteFile.js";
 
 export async function createBooking(req, res) {
   const {
@@ -112,6 +113,22 @@ export async function editBooking(req, res) {
 export async function deleteBooking(req, res) {
   try {
     const { id } = req.params;
+
+    const items =  Booking.findById(id)
+    .then(items =>{
+
+      const images= items.items.imageUrl
+
+      images.forEach(img => {
+        deleteFile(img)
+
+      });
+
+
+      
+    })
+
+
 
     const result = await Booking.findByIdAndDelete(id);
     console.log(id);
