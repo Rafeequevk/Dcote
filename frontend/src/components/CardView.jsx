@@ -45,12 +45,21 @@ const CardView = ({ bookings, onRemove, onEdit }) => {
           {/* Display Item Images */}
           <div className="flex flex-wrap mt-4 gap-2">
             {booking.items.map((item) => (
-              <img
-                key={item._id}
-                src={`http://localhost:3030${item.imageUrl}`}
-                alt={item.name}
-                className="w-24 h-24 object-cover rounded-md"
-              />
+              <div key={item._id}>
+  <h4 className="text-gray-700">{item.name}</h4>
+                <div className="flex gap-2">
+                  {item.imageUrl &&
+                    item.imageUrl.map((image, idx) => (
+                      <img
+                        key={idx}
+                        src={`http://localhost:3030${image}`} // Ensure correct image path
+                        alt={`Image of ${item.name}`}
+                        className="w-24 h-24 object-cover rounded-md"
+                      />
+                    ))}
+                </div>
+              </div>
+           
             ))}
           </div>
         </div>

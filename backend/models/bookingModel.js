@@ -4,7 +4,7 @@ const itemSchema = new mongoose.Schema({
   name: { type: String, required: true }, // Name of the item
   quantity: { type: Number, required: true }, // Quantity of the item
   price: { type: Number, required: true }, // Price of the item
-  imageUrl: { type: String, required: true }, // URL or path of the item image
+  imageUrl: { type: [String], required: true }, // URLS or path of the item image
 });
 
 const bookingSchema = new mongoose.Schema({

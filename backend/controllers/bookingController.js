@@ -27,10 +27,17 @@ export async function createBooking(req, res) {
 
     const images = req.files;
     console.log(images);
+    // This object will map each item to its associated images
+    const imageMap = {};
 
-    const imagePaths = images.map((file) => `/images/${file.filename}`);
-
-    console.log(imagePaths);
+    // For each uploaded file, we'll organize them by the item they belong to
+    images.forEach((file) => {
+      const itemIndex = file.fieldname.split("[")[1].split("]")[0]; // Extract the item index from the field name
+      if (!imageMap[itemIndex]) {
+        imageMap[itemIndex] = [];
+      }
+      imageMap[itemIndex].push(`/images/${file.filename}`); // Store the image paths for each item
+    });
 
     const newBooking = {
       billNo,
@@ -40,7 +47,7 @@ export async function createBooking(req, res) {
       staffAttended,
       items: items.map((item, index) => ({
         ...item,
-        imageUrl: imagePaths[index] || null, // Associate each item with the corresponding image path
+        imageUrl: imageMap[index] || [], // Associate each item with the corresponding image path
       })),
     };
     console.log(newBooking);
@@ -114,21 +121,25 @@ export async function deleteBooking(req, res) {
   try {
     const { id } = req.params;
 
-    const items =  Booking.findById(id)
-    .then(items =>{
+    const booking = await Booking.findById(id);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking  Not Found" });
+    }
+    console.log(booking.items);
 
-      const images= items.items.imageUrl
+    const images = [];
+    booking.items.forEach((item) => {
 
-      images.forEach(img => {
-        deleteFile(img)
+      if (item.imageUrl && item.imageUrl.length > 0) {
+        images.push(item.imageUrl);
+      }
+    });
 
-      });
+    console.log(images);
 
-
-      
-    })
-
-
+    images.forEach((img) => {
+      deleteFile(img);
+    });
 
     const result = await Booking.findByIdAndDelete(id);
     console.log(id);

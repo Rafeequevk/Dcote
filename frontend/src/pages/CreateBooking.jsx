@@ -19,7 +19,10 @@ const CreateBooking = () => {
   const handleItemChange = (index, event) => {
     const values = [...items];
     if (event.target.name === "images") {
-      values[index][event.target.name] = [...event.target.files];
+      const files = Array.from(event.target.files); // Ensure multiple images are handled
+      values[index].images = [...values[index].images, ...files]; // Append new images to the existing ones
+
+      // values[index][event.target.name] = [...event.target.files];
     } else {
       values[index][event.target.name] = event.target.value;
     }
@@ -50,8 +53,10 @@ const CreateBooking = () => {
       formData.append(`items[${index}][name]`, item.name);
       formData.append(`items[${index}][quantity]`, item.quantity);
       formData.append(`items[${index}][price]`, item.price);
+          // Attach multiple images for each item
+
       item.images.forEach((image) => {
-        formData.append("images", image);
+        formData.append(`items[${index}][images]`, image);
       });
     });
 

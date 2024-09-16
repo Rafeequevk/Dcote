@@ -9,7 +9,9 @@ router.get('/:id', showBookingById)
 router.delete('/:id',deleteBooking)
 
 // Handle file uploads and booking creation
-router.post('/',upload.array('images', 10) ,createBooking)
+// router.post('/',upload.array('images', 10) ,createBooking)
+router.post('/',upload.any() ,createBooking)
+
 // Handle file uploads and booking updates
 router.put('/:id', editBooking); // Allow image updates
 
