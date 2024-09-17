@@ -1,5 +1,6 @@
 import Booking from "../models/bookingModel.js";
 import deleteFile from "../utils/deleteFile.js";
+import path from 'path'
 
 export async function createBooking(req, res) {
   const {
@@ -26,7 +27,7 @@ export async function createBooking(req, res) {
     }
 
     const images = req.files;
-    console.log(images);
+
     // This object will map each item to its associated images
     const imageMap = {};
 
@@ -50,7 +51,6 @@ export async function createBooking(req, res) {
         imageUrl: imageMap[index] || [], // Associate each item with the corresponding image path
       })),
     };
-    console.log(newBooking);
 
     const booking = await Booking.create(newBooking);
     res.status(201).json({ message: "Booked", Booking: booking });
@@ -86,34 +86,102 @@ export async function showBookingById(req, res) {
   }
 }
 
+// export async function editBooking(req, res) {
+//   const { customerName, billNo, deliveryDate, items } = req.body;
+//   try {
+//     if (!customerName || !billNo || !deliveryDate || !items) {
+//       return res.status(400).send({
+//         message: "Send all required fields",
+//       });
+//     }
+//     const { id } = req.params;
+
+//     const newBooking = {
+//       billNo,
+//       customerName,
+//       mobileNumber,
+//       deliveryDate,
+//       items,
+//     };
+
+//     const result = await Booking.findByIdAndUpdate(id, newBooking);
+//     if (result === null) {
+//       return res.status(404).json({ message: "Booking  Not Found" });
+//     }
+//     res
+//       .status(201)
+//       .json({ message: "Booking Upated Succesfully", Booking: result });
+//   } catch (error) {
+//     console.error("Error updating Booking:", error.message);
+//     res.status(500).json({ error: "Failed to update Booking" });
+//   }
+// }
+
+
 export async function editBooking(req, res) {
-  const { customerName, billNo, deliveryDate, items } = req.body;
+
+  const {id} = req.params
+
+
+
+  
+  const {
+    billNo,
+    customerName,
+    mobileNumber,
+    deliveryDate,
+    staffAttended,
+    items,
+  } = req.body;
+
   try {
-    if (!customerName || !billNo || !deliveryDate || !items) {
+    if (
+      !customerName ||
+      !billNo ||
+      !deliveryDate ||
+      !items ||
+      !mobileNumber ||
+      !staffAttended
+    ) {
       return res.status(400).send({
         message: "Send all required fields",
       });
     }
-    const { id } = req.params;
+
+    const images = req.files;
+
+    // This object will map each item to its associated images
+    const imageMap = {};
+
+    // For each uploaded file, we'll organize them by the item they belong to
+    images.forEach((file) => {
+      const itemIndex = file.fieldname.split("[")[1].split("]")[0]; // Extract the item index from the field name
+      if (!imageMap[itemIndex]) {
+        imageMap[itemIndex] = [];
+      }
+      imageMap[itemIndex].push(`/images/${file.filename}`); // Store the image paths for each item
+    });
 
     const newBooking = {
       billNo,
       customerName,
       mobileNumber,
       deliveryDate,
-      items,
+      staffAttended,
+      items: items.map((item, index) => ({
+        ...item,
+        imageUrl: imageMap[index] || [], // Associate each item with the corresponding image path
+      })),
     };
 
     const result = await Booking.findByIdAndUpdate(id, newBooking);
-    if (result === null) {
-      return res.status(404).json({ message: "Booking  Not Found" });
+    if (!result) {
+      return response.status(404).json({ message: 'Booking not found' });
     }
-    res
-      .status(201)
-      .json({ message: "Booking Upated Succesfully", Booking: result });
+    res.status(201).json({ message: "Booking Updated", Booking: result });
   } catch (error) {
-    console.error("Error updating Booking:", error.message);
-    res.status(500).json({ error: "Failed to update Booking" });
+    console.error("Error Updating Booking:", error.message);
+    res.status(500).json({ error: "Failed to Update Booking" });
   }
 }
 
@@ -125,24 +193,23 @@ export async function deleteBooking(req, res) {
     if (!booking) {
       return res.status(404).json({ message: "Booking  Not Found" });
     }
-    console.log(booking.items);
 
     const images = [];
     booking.items.forEach((item) => {
-
       if (item.imageUrl && item.imageUrl.length > 0) {
-        images.push(item.imageUrl);
+        item.imageUrl.forEach((url) => {
+          images.push(url);
+        });
       }
     });
 
-    console.log(images);
+   
 
     images.forEach((img) => {
       deleteFile(img);
     });
 
     const result = await Booking.findByIdAndDelete(id);
-    console.log(id);
 
     if (result === null) {
       return res.status(404).json({ message: "Booking  Not Found" });

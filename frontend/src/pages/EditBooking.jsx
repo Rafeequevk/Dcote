@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTimes } from 'react-icons/fa';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
 
 const EditBooking = () => {
@@ -15,11 +15,40 @@ const EditBooking = () => {
   ]);
   const [message, setMessage] = useState("");
   const navigate = useNavigate()
+  const {id} = useParams()
+
+
+useEffect(()=>{
+  axios.get(`http://localhost:3030/booking/${id}`)
+  .then((response)=>{
+    const data= response.data
+setBillNo(data.billNo)
+setCustomerName(data.customerName)
+setMobileNumber(data.mobileNumber)
+setDeliveryDate(data.deliveryDate)
+setItems(data.items)
+
+  })
+  .catch((error)=>{
+    alert('An error happened. Please Chack console');
+        console.log(error);
+  })
+},[])
+
+
+
+
+
+
+
 
   const handleItemChange = (index, event) => {
     const values = [...items];
     if (event.target.name === "images") {
-      values[index][event.target.name] = [...event.target.files];
+      const files = Array.from(event.target.files); // Ensure multiple images are handled
+      values[index].images = [...values[index].images, ...files]; // Append new images to the existing ones
+
+      // values[index][event.target.name] = [...event.target.files];
     } else {
       values[index][event.target.name] = event.target.value;
     }
@@ -50,13 +79,15 @@ const EditBooking = () => {
       formData.append(`items[${index}][name]`, item.name);
       formData.append(`items[${index}][quantity]`, item.quantity);
       formData.append(`items[${index}][price]`, item.price);
+          // Attach multiple images for each item
+
       item.images.forEach((image) => {
-        formData.append("images", image);
+        formData.append(`items[${index}][images]`, image);
       });
     });
 
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         "http://localhost:3030/booking",
         formData,
         {

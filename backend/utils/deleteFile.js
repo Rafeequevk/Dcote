@@ -3,9 +3,11 @@ import path from 'path'
 
 
 const deleteFile = (filepath)=>{
-    const fullImagePath = `../public${filepath}`
+    
 
-    fs.unlink(fullImagePath, (err) => {
+const abfilepath = path.join(path.resolve(),'public',filepath)
+
+    fs.unlink(abfilepath, (err) => {
         if (err) {
           console.error(`Error deleting file: ${filepath}`, err);
         } else {

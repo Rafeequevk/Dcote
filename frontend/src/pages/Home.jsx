@@ -21,7 +21,7 @@ const Home = () => {
       });
   }, []);
 
-  console.log(bookings);
+
 
   const handleRemove = (id) => {
     setBookings(bookings.filter((booking) => booking.id !== id));
