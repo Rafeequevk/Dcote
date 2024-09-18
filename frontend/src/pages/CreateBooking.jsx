@@ -77,18 +77,18 @@ const CreateBooking = () => {
     }
   };
 
-  const captureImage = (index, event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const updatedItems = [...items];
-        updatedItems[index].images = [file];
-        setItems(updatedItems);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const captureImage = (index, event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       const updatedItems = [...items];
+  //       updatedItems[index].images = [file];
+  //       setItems(updatedItems);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
   const handleRemoveImage = (itemIndex, imgIndex) => {
     const updatedItems = [...items];
     updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter(
@@ -244,7 +244,7 @@ const CreateBooking = () => {
 
             <div className="flex flex-col space-y-1">
               <label className="text-gray-700 font-semibold">Images:</label>
-              <div className="relative">
+              {/* <div className="relative">
                 <input
                   type="file"
                   accept="image/*"
@@ -259,7 +259,32 @@ const CreateBooking = () => {
                   <FaCamera className="text-2xl "/>
                   <i className="fas fa-camera"></i>
                 </span>
-              </div>
+              </div> */}
+
+<div className="relative">
+  {/* Hidden file input for capturing or selecting an image */}
+  <input
+    type="file"
+    accept="image/*"
+    name="images"
+    id={`capture-${index}`} // Assign a unique ID for each item
+    onChange={(e) => handleItemChange(index, e)}
+    className="hidden" // Hide the input field
+    capture="environment" // Use environment for rear camera or user for the front camera
+    multiple // Allow multiple image selection from the folder
+  />
+
+  {/* Camera icon button */}
+  <button
+    type="button"
+    onClick={() => document.getElementById(`capture-${index}`).click()} // Programmatically click the hidden file input
+    className="absolute top-2 right-3 flex items-center text-gray-400 hover:text-gray-600"
+  >
+    <FaCamera className="text-2xl" />
+  </button>
+</div>
+
+
               {/* <div className="mt-2 flex flex-wrap">
                 {item.images.length > 0 &&
                   Array.from(item.images).map((image, imgIndex) => (
@@ -272,7 +297,31 @@ const CreateBooking = () => {
                   ))}
               </div> */}
 
-              <div className="mt-2 flex flex-wrap">
+
+{/* Display captured or selected images */}
+<div className="mt-2 flex flex-wrap">
+  {item.images.length > 0 &&
+    item.images.map((image, imgIndex) => (
+      <div key={imgIndex} className="relative">
+        <img
+          src={URL.createObjectURL(image)}
+          alt={`Preview ${imgIndex + 1}`}
+          className="w-24 h-24 object-cover rounded-md mr-2 mb-2"
+        />
+        <button
+          type="button"
+          onClick={() => handleRemoveImage(index, imgIndex)}
+          className="absolute top-1 right-1 bg-white p-1 rounded-full text-red-500 hover:text-red-700"
+          aria-label="Remove Image"
+        >
+          <FaTimes />
+        </button>
+      </div>
+    ))}
+</div>
+
+
+              {/* <div className="mt-2 flex flex-wrap">
                 {item.images.length > 0 &&
                   item.images.map((image, imgIndex) => (
                     <div key={imgIndex} className="relative">
@@ -291,7 +340,7 @@ const CreateBooking = () => {
                       </button>
                     </div>
                   ))}
-              </div>
+              </div> */}
             </div>
 
             <button
