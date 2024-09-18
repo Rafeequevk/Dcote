@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes,FaCamera} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
 
@@ -14,7 +14,7 @@ const CreateBooking = () => {
     { name: "", quantity: 1, price: 0, images: [] },
   ]);
   const [message, setMessage] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleItemChange = (index, event) => {
     const values = [...items];
@@ -53,7 +53,7 @@ const CreateBooking = () => {
       formData.append(`items[${index}][name]`, item.name);
       formData.append(`items[${index}][quantity]`, item.quantity);
       formData.append(`items[${index}][price]`, item.price);
-          // Attach multiple images for each item
+      // Attach multiple images for each item
 
       item.images.forEach((image) => {
         formData.append(`items[${index}][images]`, image);
@@ -71,7 +71,7 @@ const CreateBooking = () => {
         }
       );
       setMessage(response.data.message);
-      navigate('/')
+      navigate("/");
     } catch (error) {
       setMessage("Error creating booking");
     }
@@ -91,17 +91,19 @@ const CreateBooking = () => {
   };
   const handleRemoveImage = (itemIndex, imgIndex) => {
     const updatedItems = [...items];
-    updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter((_, index) => index !== imgIndex);
+    updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter(
+      (_, index) => index !== imgIndex
+    );
     setItems(updatedItems);
   };
 
   return (
     <div className="max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg">
-        <div className="flex justify-between items-center mb-6">
-        <BackButton/>
+      <div className="flex justify-between items-center mb-6">
+        <BackButton />
         <h1 className="text-2xl font-bold  text-gray-800">Create Booking</h1>
-        </div>
-      
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-col space-y-1">
           <label className="text-gray-700 font-semibold">Bill No:</label>
@@ -252,7 +254,9 @@ const CreateBooking = () => {
                   capture="environment" // Use "environment" for rear camera, "user" for front camera
                   multiple
                 />
-                <span className="absolute top-2 right-3 text-gray-400">
+                <span className="absolute top-2 right-3 felx items-center">
+                  
+                  <FaCamera className="text-2xl "/>
                   <i className="fas fa-camera"></i>
                 </span>
               </div>
@@ -268,7 +272,7 @@ const CreateBooking = () => {
                   ))}
               </div> */}
 
-<div className="mt-2 flex flex-wrap">
+              <div className="mt-2 flex flex-wrap">
                 {item.images.length > 0 &&
                   item.images.map((image, imgIndex) => (
                     <div key={imgIndex} className="relative">
@@ -288,7 +292,6 @@ const CreateBooking = () => {
                     </div>
                   ))}
               </div>
-              
             </div>
 
             <button

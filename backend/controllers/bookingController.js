@@ -1,6 +1,5 @@
 import Booking from "../models/bookingModel.js";
 import deleteFile from "../utils/deleteFile.js";
-import path from 'path'
 
 export async function createBooking(req, res) {
   const {
@@ -122,9 +121,6 @@ export async function editBooking(req, res) {
 
   const {id} = req.params
 
-
-
-  
   const {
     billNo,
     customerName,
