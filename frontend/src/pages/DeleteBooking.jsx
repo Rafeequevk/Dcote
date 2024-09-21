@@ -2,12 +2,14 @@ import axios from 'axios'
 import React from 'react'
 import { useNavigate,useParams} from 'react-router-dom'
 import BackButton from '../components/BackButton'
+const backendUrl = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL
+
 
 const DeleteBooking = () => {
     const {id} = useParams()
     const navigate = useNavigate()
     const handleDeleteBook = ()=>{
-        axios.delete(`http://localhost:3030/booking/${id}`).then(()=>{
+        axios.delete(`${backendUrl}/booking/${id}`).then(()=>{
             navigate('/')
         }).catch((error)=>{
             alert( 'An Error Happended Please Check console')

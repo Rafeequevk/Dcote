@@ -3,6 +3,8 @@ import axios from "axios";
 import { FaTimes } from 'react-icons/fa';
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
+const backendUrl = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL
+
 
 const EditBooking = () => {
   const [billNo, setBillNo] = useState("");
@@ -19,7 +21,7 @@ const EditBooking = () => {
 
 
 useEffect(()=>{
-  axios.get(`http://localhost:3030/booking/${id}`)
+  axios.get(`${backendUrl}/booking/${id}`)
   .then((response)=>{
     const data= response.data
 setBillNo(data.billNo)
@@ -88,7 +90,7 @@ setItems(data.items)
 
     try {
       const response = await axios.put(
-        "http://localhost:3030/booking",
+        `${backendUrl}/booking`,
         formData,
         {
           headers: {

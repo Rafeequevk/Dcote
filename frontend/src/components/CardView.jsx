@@ -1,5 +1,7 @@
 import { FaEdit, FaTrashAlt, FaTable, FaThLarge, FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
+const backendUrl = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL
+
 
 const CardView = ({ bookings, onRemove, onEdit }) => {
   return (
@@ -48,7 +50,7 @@ const CardView = ({ bookings, onRemove, onEdit }) => {
                     item.imageUrl.map((image, idx) => (
                       <img
                         key={idx}
-                        src={`http://localhost:3030${image}`} // Ensure correct image path
+                        src={`${backendUrl}${image}`} // Ensure correct image path
                         alt={`Image of ${item.name}`}
                         className="w-24 h-24 object-cover rounded-md"
                       />
