@@ -2,7 +2,7 @@
 "version" : 2,
     "rewrites": [
       {
-        "source": "/api/(.*)",    // Proxy any request starting with /api to the backend
+        "source": "/api/(.*)",    
         "destination": "https://your-backend-url.vercel.app/api/$1"
       }
     ],
@@ -14,7 +14,7 @@
     ],
     "routes": [
       {
-        "src": "/(.*)",  // Serve all routes for React app through index.html
+        "src": "/(.*)",  
         "dest": "/index.html"
       }
     ]
