@@ -1,0 +1,22 @@
+{"installCommand":"npm install",
+"version" : 2,
+    "rewrites": [
+      {
+        "source": "/api/(.*)",    // Proxy any request starting with /api to the backend
+        "destination": "https://your-backend-url.vercel.app/api/$1"
+      }
+    ],
+    "builds": [
+      {
+        "src": "src/index.js",
+        "use": "@vercel/static-build"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",  // Serve all routes for React app through index.html
+        "dest": "/index.html"
+      }
+    ]
+  }
+  
