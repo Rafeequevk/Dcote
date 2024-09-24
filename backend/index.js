@@ -20,11 +20,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 const PORT = ENV_VARS.PORT
-app.get('/',(req,res)=>{
+app.get('/',(req,res)=>{    
     res.status(234).send("welcome");
 })
 
-app.use('/booking',bookingRoute)
+app.use('/api/v1/booking',bookingRoute)
 
 app.listen(PORT,()=>{
 console.log(`app Listening Port ${PORT}`);
