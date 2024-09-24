@@ -10,7 +10,15 @@ const app = express()
 app.use('/images',express.static(path.join(path.resolve(),'public/images')))
 
 app.use (express.json())
-app.use(cors());
+
+const corsOptions = {
+    origin: 'https://dcote-frontend.onrender.com', // Specify your frontend domain
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  };
+
+app.use(cors(corsOptions));
 const PORT = ENV_VARS.PORT
 app.get('/',(req,res)=>{
     res.status(234).send("welcome");
