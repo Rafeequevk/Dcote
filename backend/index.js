@@ -12,7 +12,8 @@ app.use('/images',express.static(path.join(path.resolve(),'public/images')))
 app.use (express.json())
 
 const corsOptions = {
-    origin: 'https://dcote-frontend.onrender.com', // Specify your frontend domain
+    origin: 'https://dcote-frontend.onrender.com' , //' Specify your frontend domain'
+    // origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

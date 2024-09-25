@@ -4,7 +4,7 @@ import CardView from '../components/CardView.jsx';
 import TableView from '../components/TableView.jsx';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for routing
-const backendUrl = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL
+import  {backEndUrl} from '../../config/envVars'
 const Home = () => {
   const [view, setView] = useState('card'); // 'card' or 'table'
   const [bookings, setBookings] = useState([]);
@@ -12,7 +12,7 @@ const Home = () => {
   const navigate = useNavigate(); // Initialize navigate function
 
   useEffect(() => {
-    axios.get(`${backendUrl}/booking`)
+    axios.get(`${backEndUrl}/booking`)
       .then((response) => {
         setBookings(response.data.data);
       })

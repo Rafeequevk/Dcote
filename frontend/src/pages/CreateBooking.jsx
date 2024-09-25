@@ -3,7 +3,7 @@ import axios from "axios";
 import { FaTimes,FaCamera} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
-const backendUrl = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL
+import  {backEndUrl} from '../../config/envVars'
 
 const CreateBooking = () => {
   const [billNo, setBillNo] = useState("");
@@ -63,7 +63,7 @@ const CreateBooking = () => {
 
     try {
       const response = await axios.post(
-        `${backendUrl}/booking`,
+        `${backEndUrl}/booking`,
         formData,
         {
           headers: {
