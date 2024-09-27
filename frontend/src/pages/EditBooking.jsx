@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaCamera } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
-import  {backEndUrl} from '../../config/envVars'
-
+import { backEndUrl } from "../../config/envVars";
+import {formatDate} from '../../utils/DateConverter.js'
+import { fileStorageUrl } from "../../config/envVars.js";
 
 const EditBooking = () => {
   const [billNo, setBillNo] = useState("");
@@ -16,33 +17,33 @@ const EditBooking = () => {
     { name: "", quantity: 1, price: 0, images: [] },
   ]);
   const [message, setMessage] = useState("");
-  const navigate = useNavigate()
-  const {id} = useParams()
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(()=>{
+axios.get(`${backEndUrl}/booking/${id}`).then((response)=>{
+const booking = response.data
+console.log(formatDate(booking.deliveryDate));
+
+  setBillNo(booking.billNo)
+  setCustomerName(booking.customerName)
+  setMobileNumber(booking.mobileNumber)
+  setDeliveryDate(formatDate(booking.deliveryDate))
+  setStaffAttended(booking.staffAttended)
+
+  setItems(booking.items.map((item)=>({
+    ...item, images: item.imageUrl.map((imgurl)=>({url:imgurl,file: null}))
+
+  })))
+  
+  
+  
+
+  
+})
 
 
-useEffect(()=>{
-  axios.get(`${backEndUrl}/booking/${id}`)
-  .then((response)=>{
-    const data= response.data
-setBillNo(data.billNo)
-setCustomerName(data.customerName)
-setMobileNumber(data.mobileNumber)
-setDeliveryDate(data.deliveryDate)
-setItems(data.items)
-
-  })
-  .catch((error)=>{
-    alert('An error happened. Please Chack console');
-        console.log(error);
-  })
-},[])
-
-
-
-
-
-
-
+  },[])
 
   const handleItemChange = (index, event) => {
     const values = [...items];
@@ -81,7 +82,7 @@ setItems(data.items)
       formData.append(`items[${index}][name]`, item.name);
       formData.append(`items[${index}][quantity]`, item.quantity);
       formData.append(`items[${index}][price]`, item.price);
-          // Attach multiple images for each item
+      // Attach multiple images for each item
 
       item.images.forEach((image) => {
         formData.append(`items[${index}][images]`, image);
@@ -89,47 +90,45 @@ setItems(data.items)
     });
 
     try {
-      const response = await axios.put(
-        `${backEndUrl}/booking`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${backEndUrl}/booking`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setMessage(response.data.message);
-      navigate('/')
+      navigate("/");
     } catch (error) {
       setMessage("Error creating booking");
     }
   };
 
-  const captureImage = (index, event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const updatedItems = [...items];
-        updatedItems[index].images = [file];
-        setItems(updatedItems);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const captureImage = (index, event) => {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       const updatedItems = [...items];
+  //       updatedItems[index].images = [file];
+  //       setItems(updatedItems);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
   const handleRemoveImage = (itemIndex, imgIndex) => {
     const updatedItems = [...items];
-    updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter((_, index) => index !== imgIndex);
+    updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter(
+      (_, index) => index !== imgIndex
+    );
     setItems(updatedItems);
   };
 
   return (
     <div className="max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg">
-        <div className="flex justify-between items-center mb-6">
-        <BackButton/>
+      <div className="flex justify-between items-center mb-6">
+        <BackButton />
         <h1 className="text-2xl font-bold  text-gray-800">Create Booking</h1>
-        </div>
-      
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-col space-y-1">
           <label className="text-gray-700 font-semibold">Bill No:</label>
@@ -270,7 +269,7 @@ setItems(data.items)
 
             <div className="flex flex-col space-y-1">
               <label className="text-gray-700 font-semibold">Images:</label>
-              <div className="relative">
+              {/* <div className="relative">
                 <input
                   type="file"
                   accept="image/*"
@@ -280,10 +279,38 @@ setItems(data.items)
                   capture="environment" // Use "environment" for rear camera, "user" for front camera
                   multiple
                 />
-                <span className="absolute top-2 right-3 text-gray-400">
+                <span className="absolute top-2 right-3 felx items-center">
+                  
+                  <FaCamera className="text-2xl "/>
                   <i className="fas fa-camera"></i>
                 </span>
+              </div> */}
+
+              <div className="relative">
+                {/* Hidden file input for capturing or selecting an image */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="images"
+                  id={`capture-${index}`} // Assign a unique ID for each item
+                  onChange={(e) => handleItemChange(index, e)}
+                  className="hidden" // Hide the input field
+                  capture="environment" // Use environment for rear camera or user for the front camera
+                  multiple // Allow multiple image selection from the folder
+                />
+
+                {/* Camera icon button */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    document.getElementById(`capture-${index}`).click()
+                  } // Programmatically click the hidden file input
+                  className="absolute top-2 right-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  <FaCamera className="text-2xl" />
+                </button>
               </div>
+
               {/* <div className="mt-2 flex flex-wrap">
                 {item.images.length > 0 &&
                   Array.from(item.images).map((image, imgIndex) => (
@@ -297,6 +324,30 @@ setItems(data.items)
               </div> */}
 
 <div className="mt-2 flex flex-wrap">
+  {item.images.length > 0 &&
+    item.images.map((image, imgIndex) => (
+      <div key={imgIndex} className="relative">
+        <img
+          src={image.file ? URL.createObjectURL(image.file) : `${fileStorageUrl}`+image.url} // Show existing image URL or newly selected file
+          alt={`Preview ${imgIndex + 1}`}
+          className="w-24 h-24 object-cover rounded-md mr-2 mb-2"
+        />
+        <button
+          type="button"
+          onClick={() => handleRemoveImage(index, imgIndex)}
+          className="absolute top-1 right-1 bg-white p-1 rounded-full text-red-500 hover:text-red-700"
+          aria-label="Remove Image"
+        >
+          <FaTimes />
+        </button>
+      </div>
+    ))}
+</div>
+
+
+
+              {/* Display captured or selected images */}
+              {/* <div className="mt-2 flex flex-wrap">
                 {item.images.length > 0 &&
                   item.images.map((image, imgIndex) => (
                     <div key={imgIndex} className="relative">
@@ -315,8 +366,28 @@ setItems(data.items)
                       </button>
                     </div>
                   ))}
-              </div>
-              
+              </div> */}
+
+              {/* <div className="mt-2 flex flex-wrap">
+                {item.images.length > 0 &&
+                  item.images.map((image, imgIndex) => (
+                    <div key={imgIndex} className="relative">
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt={`Preview ${imgIndex + 1}`}
+                        className="w-24 h-24 object-cover rounded-md mr-2 mb-2"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index, imgIndex)}
+                        className="absolute top-1 right-1 bg-white p-1 rounded-full text-red-500 hover:text-red-700"
+                        aria-label="Remove Image"
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                  ))}
+              </div> */}
             </div>
 
             <button
