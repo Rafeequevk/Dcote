@@ -84,13 +84,22 @@ console.log(formatDate(booking.deliveryDate));
       formData.append(`items[${index}][price]`, item.price);
       // Attach multiple images for each item
 
-      item.images.forEach((image) => {
-        formData.append(`items[${index}][images]`, image);
-      });
+    //   item.images.forEach((image) => {
+    //     formData.append(`items[${index}][images]`, image);
+    //   });
+    // });
+
+    item.images.forEach((image) => {
+      if (image.file) {
+        formData.append(`items[${index}][images]`, image.file); // New image file
+      } else {
+        formData.append(`items[${index}][images]`, image.url); // Existing image URL
+      }
     });
+  });
 
     try {
-      const response = await axios.post(`${backEndUrl}/booking`, formData, {
+      const response = await axios.put(`${backEndUrl}/booking/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -324,7 +333,7 @@ console.log(formatDate(booking.deliveryDate));
               </div> */}
 
 <div className="mt-2 flex flex-wrap">
-  {item.images.length > 0 &&
+  {item.images.length > 0 &&    
     item.images.map((image, imgIndex) => (
       <div key={imgIndex} className="relative">
         <img

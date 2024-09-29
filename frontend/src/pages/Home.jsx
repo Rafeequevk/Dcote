@@ -4,17 +4,21 @@ import CardView from '../components/CardView.jsx';
 import TableView from '../components/TableView.jsx';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for routing
-import  {backEndUrl} from '../../config/envVars'
+import  {backEndUrl} from '../../config/envVars.js'
+
+
+
 const Home = () => {
   const [view, setView] = useState('card'); // 'card' or 'table'
   const [bookings, setBookings] = useState([]);
 
   const navigate = useNavigate(); // Initialize navigate function
-
   useEffect(() => {
     axios.get(`${backEndUrl}/booking`)
       .then((response) => {
         setBookings(response.data.data);
+        console.log("booking",bookings);
+        
       })
       .catch((error) => {
         console.log(error);
