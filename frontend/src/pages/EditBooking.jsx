@@ -106,6 +106,7 @@ console.log(formatDate(booking.deliveryDate));
       });
       setMessage(response.data.message);
       navigate("/");
+    console.log(formData)
     } catch (error) {
       setMessage("Error creating booking");
     }
@@ -333,11 +334,18 @@ console.log(formatDate(booking.deliveryDate));
               </div> */}
 
 <div className="mt-2 flex flex-wrap">
-  {item.images.length > 0 &&    
+  
+  {
+  item.images.length > 0 &&    
+
+
+  
     item.images.map((image, imgIndex) => (
       <div key={imgIndex} className="relative">
         <img
           src={image.file ? URL.createObjectURL(image.file) : `${fileStorageUrl}`+image.url} // Show existing image URL or newly selected file
+
+
           alt={`Preview ${imgIndex + 1}`}
           className="w-24 h-24 object-cover rounded-md mr-2 mb-2"
         />
@@ -421,7 +429,7 @@ console.log(formatDate(booking.deliveryDate));
           type="submit"
           className="w-full py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-700"
         >
-          Create Booking
+          Edit Booking
         </button>
       </form>
       {message && <p className="mt-4 text-center text-red-500">{message}</p>}

@@ -13,6 +13,6 @@ router.delete('/:id',deleteBooking)
 router.post('/',upload.any() ,createBooking)
 
 // Handle file uploads and booking updates
-router.put('/:id', editBooking); // Allow image updates
+router.put('/:id', upload.any(),editBooking); // Allow image updates
 
 export default router;
