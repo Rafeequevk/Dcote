@@ -23,7 +23,6 @@ const EditBooking = () => {
   useEffect(()=>{
 axios.get(`${backEndUrl}/booking/${id}`).then((response)=>{
 const booking = response.data
-console.log(formatDate(booking.deliveryDate));
 
   setBillNo(booking.billNo)
   setCustomerName(booking.customerName)
@@ -49,8 +48,10 @@ console.log(formatDate(booking.deliveryDate));
     const values = [...items];
     if (event.target.name === "images") {
       const files = Array.from(event.target.files); // Ensure multiple images are handled
-      values[index].images = [...values[index].images, ...files]; // Append new images to the existing ones
-
+      // values[index].images = [...values[index].images, ...files]; // Append new images to the existing ones
+      const newImages = files.map((file) => ({ file, url: URL.createObjectURL(file) })); // Store file and preview URL
+      values[index].images = [...values[index].images, ...newImages];
+      
       // values[index][event.target.name] = [...event.target.files];
     } else {
       values[index][event.target.name] = event.target.value;

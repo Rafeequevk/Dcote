@@ -130,6 +130,8 @@ export async function editBooking(req, res) {
     items,
   } = req.body;
 
+
+  
   try {
     if (
       !customerName ||
@@ -158,16 +160,29 @@ export async function editBooking(req, res) {
       imageMap[itemIndex].push(`/images/${file.filename}`); // Store the image paths for each item
     });
 
+    const existingBooking = await Booking.findById(id);
+    if (!existingBooking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    const updatedItems = items.map((item, index) => {
+      const existingImages = existingBooking.items[index].imageUrl || [];
+      const newImages = imageMap[index] || [];
+
+      return {
+        ...item,
+        imageUrl: [...existingImages, ...newImages], // Merge existing and new images
+      };
+    });
+
+
     const newBooking = {
       billNo,
       customerName,
       mobileNumber,
       deliveryDate,
       staffAttended,
-      items: items.map((item, index) => ({
-        ...item,
-        imageUrl: imageMap[index] || [], // Associate each item with the corresponding image path
-      })),
+      items: updatedItems,
     };
 
     const result = await Booking.findByIdAndUpdate(id, newBooking);
