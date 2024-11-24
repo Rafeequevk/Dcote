@@ -1,10 +1,11 @@
 import express from 'express'
-import { createBooking,deleteBooking,editBooking,showBooking, showBookingById, } from '../controllers/bookingController.js'
+import { createBooking,deleteBooking,deleteImage,editBooking,showBooking, showBookingById, } from '../controllers/bookingController.js'
 import upload from '../middlewares/uploadMiddleware.js'
 
 const router = express.Router()
 
 router.get('/', showBooking)
+
 router.get('/:id', showBookingById)
 router.delete('/:id',deleteBooking)
 
@@ -14,5 +15,6 @@ router.post('/',upload.any() ,createBooking)
 
 // Handle file uploads and booking updates
 router.put('/:id', upload.any(),editBooking); // Allow image updates
+router.delete('/:id/delete-image',deleteImage)
 
 export default router;

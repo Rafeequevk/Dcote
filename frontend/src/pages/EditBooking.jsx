@@ -4,7 +4,7 @@ import { FaTimes, FaCamera } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import { backEndUrl } from "../../config/envVars";
-import {formatDate} from '../../utils/DateConverter.js'
+import { formatDate } from "../../utils/DateConverter.js";
 import { fileStorageUrl } from "../../config/envVars.js";
 
 const EditBooking = () => {
@@ -20,38 +20,36 @@ const EditBooking = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  useEffect(()=>{
-axios.get(`${backEndUrl}/booking/${id}`).then((response)=>{
-const booking = response.data
+  useEffect(() => {
+    axios.get(`${backEndUrl}/booking/${id}`).then((response) => {
+      const booking = response.data;
 
-  setBillNo(booking.billNo)
-  setCustomerName(booking.customerName)
-  setMobileNumber(booking.mobileNumber)
-  setDeliveryDate(formatDate(booking.deliveryDate))
-  setStaffAttended(booking.staffAttended)
+      setBillNo(booking.billNo);
+      setCustomerName(booking.customerName);
+      setMobileNumber(booking.mobileNumber);
+      setDeliveryDate(formatDate(booking.deliveryDate));
+      setStaffAttended(booking.staffAttended);
 
-  setItems(booking.items.map((item)=>({
-    ...item, images: item.imageUrl.map((imgurl)=>({url:imgurl,file: null}))
-
-  })))
-  
-  
-  
-
-  
-})
-
-
-  },[])
+      setItems(
+        booking.items.map((item) => ({
+          ...item,
+          images: item.imageUrl.map((imgurl) => ({ url: imgurl, file: null })),
+        }))
+      );
+    });
+  }, []);
 
   const handleItemChange = (index, event) => {
     const values = [...items];
     if (event.target.name === "images") {
       const files = Array.from(event.target.files); // Ensure multiple images are handled
       // values[index].images = [...values[index].images, ...files]; // Append new images to the existing ones
-      const newImages = files.map((file) => ({ file, url: URL.createObjectURL(file) })); // Store file and preview URL
+      const newImages = files.map((file) => ({
+        file,
+        url: URL.createObjectURL(file),
+      })); // Store file and preview URL
       values[index].images = [...values[index].images, ...newImages];
-      
+
       // values[index][event.target.name] = [...event.target.files];
     } else {
       values[index][event.target.name] = event.target.value;
@@ -85,29 +83,33 @@ const booking = response.data
       formData.append(`items[${index}][price]`, item.price);
       // Attach multiple images for each item
 
-    //   item.images.forEach((image) => {
-    //     formData.append(`items[${index}][images]`, image);
-    //   });
-    // });
+      //   item.images.forEach((image) => {
+      //     formData.append(`items[${index}][images]`, image);
+      //   });
+      // });
 
-    item.images.forEach((image) => {
-      if (image.file) {
-        formData.append(`items[${index}][images]`, image.file); // New image file
-      } else {
-        formData.append(`items[${index}][images]`, image.url); // Existing image URL
-      }
+      item.images.forEach((image) => {
+        if (image.file) {
+          formData.append(`items[${index}][images]`, image.file); // New image file
+        } else {
+          formData.append(`items[${index}][images]`, image.url); // Existing image URL
+        }
+      });
     });
-  });
 
     try {
-      const response = await axios.put(`${backEndUrl}/booking/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.put(
+        `${backEndUrl}/booking/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setMessage(response.data.message);
       navigate("/");
-    console.log(formData)
+      console.log(formData);
     } catch (error) {
       setMessage("Error creating booking");
     }
@@ -125,12 +127,48 @@ const booking = response.data
   //     reader.readAsDataURL(file);
   //   }
   // };
-  const handleRemoveImage = (itemIndex, imgIndex) => {
+
+  // const handleRemoveImage = async(itemIndex, imgIndex) => {
+  //   const updatedItems = [...items];
+  //   updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter(
+  //     (_, index) => index !== imgIndex
+  //   );
+  //   setItems(updatedItems);
+  // };
+
+  const handleRemoveImage = async (itemIndex, imgIndex) => {
     const updatedItems = [...items];
-    updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter(
-      (_, index) => index !== imgIndex
-    );
-    setItems(updatedItems);
+    const image = updatedItems[itemIndex].images[imgIndex];
+
+    if (image.file) {
+      // This is a newly uploaded image (temporary), just remove it from the front end
+      updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter(
+        (_, index) => index !== imgIndex
+      );
+      setItems(updatedItems);
+    } else {
+      // This is an existing image from the DB, send a delete request to the server
+      try {
+        const response = await axios.delete(
+          `${backEndUrl}/booking/${id}/delete-image`,
+          {
+            params: { imageUrl: image.url }, // Pass the image URL as a query parameter
+          }
+        );
+
+        if (response.status === 200) {
+          // Remove the image from the state if successfully deleted from the server
+          updatedItems[itemIndex].images = updatedItems[
+            itemIndex
+          ].images.filter((_, index) => index !== imgIndex);
+          setItems(updatedItems);
+        } else {
+          console.error("Failed to delete image from server");
+        }
+      } catch (error) {
+        console.error("Error deleting image from server:", error);
+      }
+    }
   };
 
   return (
@@ -334,35 +372,30 @@ const booking = response.data
                   ))}
               </div> */}
 
-<div className="mt-2 flex flex-wrap">
-  
-  {
-  item.images.length > 0 &&    
-
-
-  
-    item.images.map((image, imgIndex) => (
-      <div key={imgIndex} className="relative">
-        <img
-          src={image.file ? URL.createObjectURL(image.file) : `${fileStorageUrl}`+image.url} // Show existing image URL or newly selected file
-
-
-          alt={`Preview ${imgIndex + 1}`}
-          className="w-24 h-24 object-cover rounded-md mr-2 mb-2"
-        />
-        <button
-          type="button"
-          onClick={() => handleRemoveImage(index, imgIndex)}
-          className="absolute top-1 right-1 bg-white p-1 rounded-full text-red-500 hover:text-red-700"
-          aria-label="Remove Image"
-        >
-          <FaTimes />
-        </button>
-      </div>
-    ))}
-</div>
-
-
+              <div className="mt-2 flex flex-wrap">
+                {item.images.length > 0 &&
+                  item.images.map((image, imgIndex) => (
+                    <div key={imgIndex} className="relative">
+                      <img
+                        src={
+                          image.file
+                            ? URL.createObjectURL(image.file)
+                            : `${fileStorageUrl}` + image.url
+                        } // Show existing image URL or newly selected file
+                        alt={`Preview ${imgIndex + 1}`}
+                        className="w-24 h-24 object-cover rounded-md mr-2 mb-2"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index, imgIndex)}
+                        className="absolute top-1 right-1 bg-white p-1 rounded-full text-red-500 hover:text-red-700"
+                        aria-label="Remove Image"
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                  ))}
+              </div>
 
               {/* Display captured or selected images */}
               {/* <div className="mt-2 flex flex-wrap">

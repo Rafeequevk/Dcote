@@ -233,3 +233,26 @@ export async function deleteBooking(req, res) {
     res.status(500).json({ error: "Failed to Delete Booking" });
   }
 }
+
+
+export async function deleteImage(req,res){
+  const { imageUrl } = req.query; // Extract the image URL from query parameters
+  const {id} = req.params;
+
+  try {
+    // Remove the image from the file system (server)
+    deleteFile(imageUrl); // Assuming this function handles file path resolution
+
+    // Remove the image from the database (update booking record)
+    await Booking.updateMany(
+      { "items.imageUrl": imageUrl },
+      { $pull: { "items.$.imageUrl": imageUrl } }
+    );
+
+    res.status(200).json({ message: "Image deleted successfully" });
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    res.status(500).json({ message: "Failed to delete image" });
+  }
+}
+
