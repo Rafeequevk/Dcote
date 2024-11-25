@@ -175,7 +175,7 @@ const EditBooking = () => {
     <div className="max-w-2xl mx-auto p-8 bg-white shadow-lg rounded-lg">
       <div className="flex justify-between items-center mb-6">
         <BackButton />
-        <h1 className="text-2xl font-bold  text-gray-800">Create Booking</h1>
+        <h1 className="text-2xl font-bold  text-gray-800">Edit Booking</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
