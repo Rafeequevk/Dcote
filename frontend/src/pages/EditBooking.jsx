@@ -232,6 +232,7 @@ const EditBooking = () => {
           <div className="relative">
             <input
               type="date"
+              min={new Date().toISOString().slice(0, 10)}
               value={deliveryDate}
               onChange={(e) => setDeliveryDate(e.target.value)}
               required

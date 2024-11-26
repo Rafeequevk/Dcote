@@ -13,7 +13,7 @@ app.use (express.json())
 const ORIGIN = ENV_VARS.CORS_ORIGIN
 
 const corsOptions = {
-    origin: ORIGIN || 'http://localhost:3000', //' Specify your frontend domain'
+    origin:  'http://localhost:3000', //' Specify your frontend domain'
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
