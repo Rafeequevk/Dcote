@@ -10,7 +10,7 @@ const app = express()
 app.use('/images',express.static(path.join(path.resolve(),'public/images')))
 
 app.use (express.json())
-const ORIGIN = ENV_VARS.ORIGIN
+const ORIGIN = ENV_VARS.CORS_ORIGIN
 
 const corsOptions = {
     origin: ORIGIN || 'http://localhost:3000', //' Specify your frontend domain'
