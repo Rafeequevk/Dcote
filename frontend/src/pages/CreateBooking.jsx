@@ -272,7 +272,7 @@ const CreateBooking = () => {
     id={`capture-${index}`} // Assign a unique ID for each item
     onChange={(e) => handleItemChange(index, e)}
     className="hidden" // Hide the input field
-    capture="environment" // Use environment for rear camera or user for the front camera
+    // capture="environment" // Use environment for rear camera or user for the front camera
     multiple // Allow multiple image selection from the folder
   />
 

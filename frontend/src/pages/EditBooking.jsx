@@ -234,7 +234,7 @@ const EditBooking = () => {
               type="date"
               min={new Date().toISOString().slice(0, 10)}
               value={deliveryDate}
-              onChange={(e) => setDeliveryDate(e.target.value)}
+              onChange={(e) => setDeliveryDate(formatDate(e.target.value))}
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

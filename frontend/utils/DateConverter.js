@@ -1,14 +1,12 @@
-export const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
-  const year = date.getFullYear();
+export const DisplayformatDate = (date) => {
 
-  const yyyyMMdd = `${year}-${month}-${day}`;
-  const ddMMyyyy = `${day}-${month}-${year}`;
+  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  const [year, month, day] = new Date(date).toLocaleDateString("en-CA", options).split("-");
+  return  `${day}-${month}-${year}`;
 
-  return {
-    yyyyMMdd,
-    ddMMyyyy,
-  };
+};
+
+export const formatDate = (date) => {
+  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  return new Date(date).toLocaleDateString("en-CA", options); // For YYYY-MM-DD format
 };

@@ -1,6 +1,7 @@
 import { FaEdit, FaTrashAlt, FaTable, FaThLarge, FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import  {fileStorageUrl} from '../../config/envVars'
+import {DisplayformatDate} from '../../utils/DateConverter'
 
 
 const CardView = ({ bookings, onRemove, onEdit }) => {
@@ -38,7 +39,7 @@ const CardView = ({ bookings, onRemove, onEdit }) => {
           </div>
 
           <p className="text-gray-600">Customer: {booking.customerName}</p>
-          <p className="text-gray-600">Delivery Date: {booking.deliveryDate}</p>
+          <p className="text-gray-600">Delivery Date: {DisplayformatDate(booking.deliveryDate)}</p>
 
           {/* Display Item Images */}
           <div className="flex flex-wrap mt-4 gap-2 ">

@@ -1,5 +1,7 @@
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import {DisplayformatDate} from '../../utils/DateConverter'
+
 
 const TableView = ({ bookings, onRemove, onEdit }) => {
   return (
@@ -31,7 +33,7 @@ const TableView = ({ bookings, onRemove, onEdit }) => {
                 {booking.customerName}
               </td>
               <td className="px-6 py-4 border-b border-gray-300 text-sm">
-                {booking.deliveryDate}
+                {DisplayformatDate(booking.deliveryDate)}
               </td>
               <td className="px-6 py-4 border-b border-gray-300 text-right text-sm  ">
                 <div className="flex justify-between items-center">
