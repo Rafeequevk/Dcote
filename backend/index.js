@@ -13,13 +13,14 @@ app.use (express.json())
 const ORIGIN = ENV_VARS.CORS_ORIGIN
 
 const corsOptions = {
-    origin:  'http://localhost:3000', //' Specify your frontend domain'
+    origin:  ORIGIN , //' Specify your frontend domain'
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   };
 
 app.use(cors(corsOptions));
+
 const PORT = ENV_VARS.PORT
 app.get('/',(req,res)=>{    
     res.status(234).send("welcome");
