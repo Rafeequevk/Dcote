@@ -12,8 +12,11 @@ app.use('/images',express.static(path.join(path.resolve(),'public/images')))
 app.use (express.json())
 const ORIGIN = ENV_VARS.CORS_ORIGIN
 
+
+
+
 const corsOptions = {
-    origin:  ORIGIN , //' Specify your frontend domain'
+    origin:  ORIGIN, //' Specify your frontend domain'
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

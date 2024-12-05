@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaTimes,FaCamera} from "react-icons/fa";
+import { FaTimes, FaCamera, FaTag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
-import  {backEndUrl} from '../../config/envVars'
+import { backEndUrl } from "../../config/envVars";
 
 const CreateBooking = () => {
   const [billNo, setBillNo] = useState("");
@@ -62,15 +62,11 @@ const CreateBooking = () => {
     });
 
     try {
-      const response = await axios.post(
-        `${backEndUrl}/booking`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${backEndUrl}/booking`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setMessage(response.data.message);
       navigate("/");
     } catch (error) {
@@ -205,7 +201,8 @@ const CreateBooking = () => {
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <span className="absolute top-2 right-3 text-gray-400">
-                  <i className="fas fa-tag"></i>
+                <FaTag className="text-xl" />
+
                 </span>
               </div>
             </div>
@@ -246,84 +243,57 @@ const CreateBooking = () => {
 
             <div className="flex flex-col space-y-1">
               <label className="text-gray-700 font-semibold">Images:</label>
-              {/* <div className="relative">
-                <input
-                  type="file"
-                  accept="image/*"
-                  name="images"
-                  onChange={(e) => handleItemChange(index, e)}
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  capture="environment" // Use "environment" for rear camera, "user" for front camera
-                  multiple
-                />
-                <span className="absolute top-2 right-3 felx items-center">
-                  
-                  <FaCamera className="text-2xl "/>
-                  <i className="fas fa-camera"></i>
-                </span>
-              </div> */}
+              <div className=" flex">
+                <div className="relative">
+                  {/* Hidden file input for capturing or selecting an image */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    name="images"
+                    id={`capture-${index}`} // Assign a unique ID for each item
+                    onChange={(e) => handleItemChange(index, e)}
+                    className="hidden" // Hide the input field
+                    // capture="environment" // Use environment for rear camera or user for the front camera
+                    multiple // Allow multiple image selection from the folder
+                  />
 
-<div className="relative">
-  {/* Hidden file input for capturing or selecting an image */}
-  <input
-    type="file"
-    accept="image/*"
-    name="images"
-    id={`capture-${index}`} // Assign a unique ID for each item
-    onChange={(e) => handleItemChange(index, e)}
-    className="hidden" // Hide the input field
-    // capture="environment" // Use environment for rear camera or user for the front camera
-    multiple // Allow multiple image selection from the folder
-  />
+                  {/* Camera icon button */}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document.getElementById(`capture-${index}`).click()
+                    } // Programmatically click the hidden file input
+                    className="absolute top-2 right-3 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    <FaCamera className="text-2xl" />
+                  </button>
+                </div>
 
-  {/* Camera icon button */}
-  <button
-    type="button"
-    onClick={() => document.getElementById(`capture-${index}`).click()} // Programmatically click the hidden file input
-    className="absolute top-2 right-3 flex items-center text-gray-400 hover:text-gray-600"
-  >
-    <FaCamera className="text-2xl" />
-  </button>
-</div>
+                {/* Button for selecting an image from the gallery */}
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    name="galleryImage"
+                    id={`gallery-${index}`} // Unique ID for the gallery button
+                    onChange={(e) => handleItemChange(index, e)}
+                    className="hidden" // Hidden input field
+                    multiple // Allow multiple images to be selected
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document.getElementById(`gallery-${index}`).click()
+                    }
+                    className="flex items-center px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-700"
+                  >
+                    <i className="fas fa-images mr-2"></i> Choose from Gallery
+                  </button>
+                </div>
+              </div>
 
-
-              {/* <div className="mt-2 flex flex-wrap">
-                {item.images.length > 0 &&
-                  Array.from(item.images).map((image, imgIndex) => (
-                    <img
-                      key={imgIndex}
-                      src={URL.createObjectURL(image)}
-                      alt={`Preview ${imgIndex + 1}`}
-                      className="w-24 h-24 object-cover rounded-md mr-2 mb-2"
-                    />
-                  ))}
-              </div> */}
-
-
-{/* Display captured or selected images */}
-<div className="mt-2 flex flex-wrap">
-  {item.images.length > 0 &&
-    item.images.map((image, imgIndex) => (
-      <div key={imgIndex} className="relative">
-        <img
-          src={URL.createObjectURL(image)}
-          alt={`Preview ${imgIndex + 1}`}
-          className="w-24 h-24 object-cover rounded-md mr-2 mb-2"
-        />
-        <button
-          type="button"
-          onClick={() => handleRemoveImage(index, imgIndex)}
-          className="absolute top-1 right-1 bg-white p-1 rounded-full text-red-500 hover:text-red-700"
-          aria-label="Remove Image"
-        >
-          <FaTimes />
-        </button>
-      </div>
-    ))}
-</div>
-
-
-              {/* <div className="mt-2 flex flex-wrap">
+              {/* Display captured or selected images */}
+              <div className="mt-2 flex flex-wrap">
                 {item.images.length > 0 &&
                   item.images.map((image, imgIndex) => (
                     <div key={imgIndex} className="relative">
@@ -342,7 +312,7 @@ const CreateBooking = () => {
                       </button>
                     </div>
                   ))}
-              </div> */}
+              </div>
             </div>
 
             <button
