@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaTimes, FaCamera, FaTag } from "react-icons/fa";
+import { FaTimes, FaCamera, FaTag, FaFileInvoiceDollar, FaFileInvoice, FaUser, FaPhoneAlt, FaMobile, FaCalendarAlt, FaRupeeSign } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
 import { backEndUrl } from "../../config/envVars";
@@ -74,18 +74,6 @@ const CreateBooking = () => {
     }
   };
 
-  // const captureImage = (index, event) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       const updatedItems = [...items];
-  //       updatedItems[index].images = [file];
-  //       setItems(updatedItems);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
   const handleRemoveImage = (itemIndex, imgIndex) => {
     const updatedItems = [...items];
     updatedItems[itemIndex].images = updatedItems[itemIndex].images.filter(
@@ -113,14 +101,14 @@ const CreateBooking = () => {
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <span className="absolute top-2 right-3 text-gray-400">
-              <i className="fas fa-file-invoice-dollar"></i>
+              <i className="fas fa-file-invoice-dollar"> <FaFileInvoice/></i>
             </span>
           </div>
         </div>
 
         <div className="flex flex-col space-y-1">
           <label className="text-gray-700 font-semibold">Customer Name:</label>
-          <div className="relative">
+          <div className="relative flex items-center">
             <input
               type="text"
               value={customerName}
@@ -128,15 +116,15 @@ const CreateBooking = () => {
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <span className="absolute top-2 right-3 text-gray-400">
-              <i className="fas fa-user"></i>
+            <span className="absolute right-3 text-gray-400">
+              <FaUser/>
             </span>
           </div>
         </div>
 
         <div className="flex flex-col space-y-1">
           <label className="text-gray-700 font-semibold">Mobile Number:</label>
-          <div className="relative">
+          <div className="relative flex items-center">
             <input
               type="text"
               value={mobileNumber}
@@ -144,8 +132,8 @@ const CreateBooking = () => {
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <span className="absolute top-2 right-3 text-gray-400">
-              <i className="fas fa-phone-alt"></i>
+            <span className="absolute  right-3 text-gray-400">
+             <FaMobile/>
             </span>
           </div>
         </div>
@@ -162,14 +150,14 @@ const CreateBooking = () => {
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <span className="absolute top-2 right-3 text-gray-400">
-              <i className="fas fa-calendar-alt"></i>
+              {/* <i className="fas fa-calendar-alt"> <FaCalendarAlt/></i> */}
             </span>
           </div>
         </div>
 
         <div className="flex flex-col space-y-1">
           <label className="text-gray-700 font-semibold">Staff Attended:</label>
-          <div className="relative">
+          <div className="relative flex items-center">
             <input
               type="text"
               value={staffAttended}
@@ -177,8 +165,8 @@ const CreateBooking = () => {
               required
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <span className="absolute top-2 right-3 text-gray-400">
-              <i className="fas fa-user-nurse"></i>
+            <span className="absolute  right-3 text-gray-400">
+              <FaUser/>
             </span>
           </div>
         </div>
@@ -191,7 +179,7 @@ const CreateBooking = () => {
           >
             <div className="flex flex-col space-y-1">
               <label className="text-gray-700 font-semibold">Item Name:</label>
-              <div className="relative">
+              <div className="relative flex items-center">
                 <input
                   type="text"
                   name="name"
@@ -200,9 +188,8 @@ const CreateBooking = () => {
                   required
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <span className="absolute top-2 right-3 text-gray-400">
-                <FaTag className="text-xl" />
-
+                <span className="absolute  right-3 text-gray-400">
+                  <FaTag className="" />
                 </span>
               </div>
             </div>
@@ -219,7 +206,7 @@ const CreateBooking = () => {
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <span className="absolute top-2 right-3 text-gray-400">
-                  <i className="fas fa-sort-numeric-up-alt"></i>
+                  {/* <i className="fas fa-sort-numeric-up-alt"></i> */}
                 </span>
               </div>
             </div>
@@ -235,15 +222,15 @@ const CreateBooking = () => {
                   required
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <span className="absolute top-2 right-3 text-gray-400">
-                  <i className="fas fa-dollar-sign"></i>
+                <span className="absolute right-3 text-gray-400">
+                  {/* <i className="fas fa-dollar-sign"> <FaRupeeSign/></i> */}
                 </span>
               </div>
             </div>
 
             <div className="flex flex-col space-y-1">
               <label className="text-gray-700 font-semibold">Images:</label>
-              <div className=" flex">
+              <div className="flex ">
                 <div className="relative">
                   {/* Hidden file input for capturing or selecting an image */}
                   <input
@@ -270,7 +257,7 @@ const CreateBooking = () => {
                 </div>
 
                 {/* Button for selecting an image from the gallery */}
-                <div className="relative">
+                <div className="relative ">
                   <input
                     type="file"
                     accept="image/*"
